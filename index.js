@@ -94,6 +94,26 @@ async function run() {
            res.send(result);
     })
 
+    // event update api
+    app.patch('/api/events/update/:id', async(req,res) => {
+        const id = req.params.id;
+        const data = req.body;
+        const query = {_id : new ObjectId(id)};
+        
+        const updatedDoc = {
+           $set : {
+                 eventTitle : data.title,
+                 eventDate : data.date,
+                 eventTime : data.time,
+                 location : data.eventLoacation,
+                 description : data.eventDescription
+           }
+        }
+
+        const result = await eventCollections.updateOne(query,updatedDoc);
+        res.send(result)
+    })
+
 
 
     // Send a ping to confirm a successful connection
