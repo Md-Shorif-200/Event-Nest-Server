@@ -4,6 +4,9 @@ const app = express();
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { startOfWeek, endOfWeek, subWeeks, startOfMonth, endOfMonth } = require('date-fns');
+
+
 
 // middleware
 app.use(express.json());
@@ -71,10 +74,21 @@ async function run() {
 
     //  event get api
 
-    app.get("/api/events", async (req, res) => {
-      const result = await eventCollections.find().toArray();
-      res.send(result);
-    });
+app.get("/api/events", async (req, res) => {
+  const searchValue = req.query.search || "";
+  
+
+  const query = {
+    eventTitle: { $regex: searchValue, $options: "i" },
+  };
+
+ 
+
+  const result = await eventCollections.find(query).toArray();
+  res.send(result);
+});
+
+
 
     // event delete api
     app.delete("/api/events/delete/:id", async (req, res) => {
